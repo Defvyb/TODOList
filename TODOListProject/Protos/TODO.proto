@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option csharp_namespace = "TODOListProject";
+
+package aemtsev;
+
+service TODO {
+  // Sends a greeting
+  rpc List (ListRequest) returns (ListReply);
+  rpc Add (AddRequest) returns (AddReply);
+  rpc Delete (DeleteRequest) returns (DeleteReply);
+}
+
+message ListRequest {
+  
+}
+
+message ListReply {
+  repeated string tasks = 1;
+}
+
+message AddRequest {
+  int32 id = 1;
+  string task = 2;
+}
+
+message AddReply {
+  string result = 1;
+}
+
+message DeleteRequest {
+  int32 id = 1;
+}
+
+message DeleteReply {
+  string result = 1;
+}
