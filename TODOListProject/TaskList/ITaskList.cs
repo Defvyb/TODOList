@@ -1,8 +1,11 @@
-namespace TODOListProject;
+using TODOListProject.Rubens;
+
+namespace TODOListProject.TaskList;
 
 public interface ITaskList
 {
-    bool Add(int id, string name);
-    bool Delete(int id);
-    List<string> GetList();
+    Guid? tryAdd(string name);
+    bool tryDelete(Guid id);
+    Dictionary<string, string> GetList();
+    Dictionary<string, AtomID> GetAtomIdList();
 }

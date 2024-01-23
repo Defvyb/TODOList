@@ -7,6 +7,7 @@ package aemtsev;
 service TODO {
   // Sends a greeting
   rpc List (ListRequest) returns (ListReply);
+  rpc ListAtom (ListRequest) returns (ListAtomReply);
   rpc Add (AddRequest) returns (AddReply);
   rpc Delete (DeleteRequest) returns (DeleteReply);
 }
@@ -16,20 +17,24 @@ message ListRequest {
 }
 
 message ListReply {
-  repeated string tasks = 1;
+  map<string, string> tasks = 1;
+}
+
+message ListAtomReply {
+  map<string, uint64> tasks = 1;
 }
 
 message AddRequest {
-  int32 id = 1;
-  string task = 2;
+  string task = 1;
 }
 
 message AddReply {
   string result = 1;
+  optional string id = 2;
 }
 
 message DeleteRequest {
-  int32 id = 1;
+  string id = 1;
 }
 
 message DeleteReply {

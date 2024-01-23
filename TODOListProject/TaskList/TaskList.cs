@@ -1,4 +1,7 @@
-namespace TODOListProject;
+using TODOListProject.Db;
+using TODOListProject.Rubens;
+
+namespace TODOListProject.TaskList;
 
 public class TaskList: ITaskList
 {
@@ -14,35 +17,53 @@ public class TaskList: ITaskList
             _todoList = taskDb.GetList();
         }
     }
-
-    public bool Add(int id, string name)
+    
+    public Guid? tryAdd(string name)
     {
-        if (_todoList.ContainsKey(id))
-            return false;
-        _todoList.Add(id, name);
+        var id = Guid.NewGuid();
+        static ulong GetNextId()
+        {
+            var random = new Random();
+            return (ulong)random.Next(1, 1000000);
+        }
+        var atomId = new AtomID(GetNextId());
         using (var scope = _scopeFactory.CreateScope())
         {
             var taskDb = scope.ServiceProvider.GetRequiredService<ITaskDb>();
-            return taskDb.Add( id, name);
+            var result =taskDb.Add(id.ToString(), name, atomId);
+            if (result)
+            {
+                _todoList.Add(id.ToString(), name);
+                _todoAtomIdList.Add(id.ToString(), atomId);
+                return id;
+            }
         }
+
+        return null;
     }
     
-    public bool Delete(int id)
+    public bool tryDelete(Guid id)
     {
-        var result = _todoList.Remove(id);
+        var result = _todoList.Remove(id.ToString());
         if(!result)
             return false;
         using (var scope = _scopeFactory.CreateScope())
         {
             var taskDb = scope.ServiceProvider.GetRequiredService<ITaskDb>();
-            return taskDb.Delete(id);
+            return taskDb.Delete(id.ToString());
         }
     }
     
-    public List<string> GetList()
+    public Dictionary<string, string> GetList()
     {
-        return _todoList.Values.ToList();
+        return _todoList;
+    }
+
+    public Dictionary<string, AtomID> GetAtomIdList()
+    {
+        return _todoAtomIdList;
     }
     
-    private readonly Dictionary<int, string> _todoList = new();
+    private readonly Dictionary<string, string> _todoList = new();
+    private readonly Dictionary<string, AtomID> _todoAtomIdList = new();
 }

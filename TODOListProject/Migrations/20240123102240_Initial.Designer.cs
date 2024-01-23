@@ -4,14 +4,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using TODOListProject.Ef;
 
 #nullable disable
 
 namespace TODOListProject.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    [Migration("20240119090020_CreateTodoTable")]
-    partial class CreateTodoTable
+    [Migration("20240123102240_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,10 +24,13 @@ namespace TODOListProject.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Todo", b =>
+            modelBuilder.Entity("TODOListProject.Ef.Todo", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("integer");
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<ulong>("AtomId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Name")
                         .IsRequired()

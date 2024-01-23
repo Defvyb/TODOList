@@ -1,6 +1,9 @@
-using TODOListProject;
+using Google.Cloud.EntityFrameworkCore.Spanner.Extensions;
 using TODOListProject.Services;
 using Microsoft.EntityFrameworkCore;
+using TODOListProject.Db;
+using TODOListProject.Ef;
+using TODOListProject.TaskList;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,10 +25,22 @@ builder.Services.AddSingleton<TodoContextOptions>(provider =>
         throw new InvalidOperationException("TodoTableName is not configured.");
     }
     
-    var schemaName = configuration["Schema"];
-    if (string.IsNullOrEmpty(schemaName))
+   
+
+    var databaseProvider = configuration["DatabaseProvider"];
+
+    string schemaName = String.Empty;
+    switch (databaseProvider)
     {
-        throw new InvalidOperationException("Schema is not configured.");
+        case "Postgres":
+            var schemaFromConfig = configuration["Schema"];
+            if (string.IsNullOrEmpty(schemaFromConfig))
+            {
+                throw new InvalidOperationException("Schema is not configured for postgres.");
+            }
+
+            schemaName = schemaFromConfig;
+            break;
     }
 
     return new TodoContextOptions
@@ -37,8 +52,32 @@ builder.Services.AddSingleton<TodoContextOptions>(provider =>
 
 builder.Services.AddDbContext<TodoContext>((serviceProvider, options) =>
 {
-    var connectionString = serviceProvider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection");
-    options.UseNpgsql(connectionString);
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    var databaseProvider = configuration["DatabaseProvider"];
+
+    switch (databaseProvider)
+    {
+        case "Spanner":
+            var spannerConnectionString = configuration.GetConnectionString("SpannerConnection");
+            if (string.IsNullOrEmpty(spannerConnectionString))
+            {
+                throw new InvalidOperationException("ConnectionString is not configured SpannerConnection.");
+            }
+            options.UseSpanner(spannerConnectionString);
+            break;
+
+        case "Postgres":
+            var postgresConnectionString = configuration.GetConnectionString("PostgresConnection");
+            if (string.IsNullOrEmpty(postgresConnectionString))
+            {
+                throw new InvalidOperationException("ConnectionString is not configured PostgresConnection.");
+            }
+            options.UseNpgsql(postgresConnectionString);
+            break;
+
+        default:
+            throw new InvalidOperationException("Unsupported database provider");
+    }
 });
 
 

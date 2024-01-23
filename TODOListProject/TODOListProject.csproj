@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <RootNamespace>GRPSHelloWorld</RootNamespace>
+        <RootNamespace>TODOListProject</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,13 +13,21 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.60.0" />
+        <PackageReference Include="Google.Cloud.EntityFrameworkCore.Spanner" Version="2.1.3" />
+        <PackageReference Include="Google.Cloud.Spanner.Data" Version="4.6.0" />
+        <PackageReference Include="Grpc.AspNetCore.Server" Version="2.60.0" />
         <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.60.0" />
+        <PackageReference Include="Grpc.Reflection" Version="2.60.0" />
         <PackageReference Include="Grpc.Tools" Version="2.60.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -30,6 +38,11 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DbSpanner\" />
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>

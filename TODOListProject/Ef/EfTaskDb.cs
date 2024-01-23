@@ -1,4 +1,7 @@
-namespace TODOListProject;
+using TODOListProject.Db;
+using TODOListProject.Rubens;
+
+namespace TODOListProject.Ef;
 
 public class EfTaskDb : ITaskDb
 {
@@ -9,11 +12,11 @@ public class EfTaskDb : ITaskDb
         _context = context;
     }
 
-    public bool Add(int id, string name)
+    public bool Add(string id, string name, AtomID atomId)
     {
         try
         {
-            var todo = new Todo { Id = id, Name = name };
+            var todo = new Todo { Id = id, Name = name, AtomId = atomId};
             _context.Todos.Add(todo);
             _context.SaveChanges();
             return true;
@@ -24,7 +27,7 @@ public class EfTaskDb : ITaskDb
         }
     }
 
-    public bool Delete(int id)
+    public bool Delete(string id)
     {
         try
         {
@@ -40,8 +43,13 @@ public class EfTaskDb : ITaskDb
         }
     }
 
-    public Dictionary<int, string> GetList()
+    public Dictionary<string, string> GetList()
     {
         return _context.Todos.ToDictionary(t => t.Id, t => t.Name);
+    }
+    
+    public Dictionary<string, AtomID> GetAtomIdList()
+    {
+        return _context.Todos.ToDictionary(t => t.Id, t => t.AtomId);
     }
 }
